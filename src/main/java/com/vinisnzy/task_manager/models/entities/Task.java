@@ -1,4 +1,4 @@
-package com.vinisnzy.task_manager.models;
+package com.vinisnzy.task_manager.models.entities;
 
 import com.vinisnzy.task_manager.enums.TaskStatus;
 import jakarta.persistence.*;
