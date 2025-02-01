@@ -1,6 +1,6 @@
 package com.vinisnzy.task_manager.repositories;
 
-import com.vinisnzy.task_manager.models.Task;
+import com.vinisnzy.task_manager.models.entities.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
