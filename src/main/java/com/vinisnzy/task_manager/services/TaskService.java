@@ -1,42 +1,50 @@
 package com.vinisnzy.task_manager.services;
 
+import com.vinisnzy.task_manager.enums.TaskStatus;
 import com.vinisnzy.task_manager.exceptions.ResourceNotFoundException;
 import com.vinisnzy.task_manager.models.entities.Task;
 import com.vinisnzy.task_manager.repositories.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TaskService {
-    private final TaskRepository taskRepository;
 
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
+    @Autowired
+    private TaskRepository repository;
 
     public List<Task> getTasks() {
-        return taskRepository.findAll();
+        List<Task> tasks = repository.findAll();
+        return tasks;
     }
 
     public Task getTaskById(Long id) {
-        return taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        Task task = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        return task;
     }
 
     public List<Task> getTasksByTitle(String title) {
-        return taskRepository.findByTitleContaining(title);
+        List<Task> tasks = repository.findByTitleContaining(title);
+        if (tasks.isEmpty()) throw new ResourceNotFoundException(title);
+        return tasks;
     }
 
-    public List<Task> getTasksByStatus(String status) {
-        return taskRepository.findByStatus(status);
+    public List<Task> getTasksByStatus(TaskStatus status) {
+        List<Task> tasks = repository.findByStatus(status);
+        if (tasks.isEmpty()) throw new ResourceNotFoundException();
+        return tasks;
     }
 
-    public List<Task> getTasksByTitleAndStatus(String title, String status) {
-        return taskRepository.findByTitleContainingAndStatus(title, status);
+    public List<Task> getTasksByTitleAndStatus(String title, TaskStatus status) {
+        List<Task> tasks = repository.findByTitleContainingAndStatus(title, status);
+        if (tasks.isEmpty()) throw new ResourceNotFoundException(title);
+        return tasks;
     }
 
     public Task createTask(Task task) {
-        return taskRepository.save(task);
+        return repository.save(task);
     }
 
     public Task updateTask(Long id, Task task) {
@@ -44,10 +52,10 @@ public class TaskService {
         taskToUpdate.setTitle(task.getTitle());
         taskToUpdate.setDescription(task.getDescription());
         taskToUpdate.setStatus(task.getStatus());
-        return taskRepository.save(taskToUpdate);
+        return repository.save(taskToUpdate);
     }
 
     public void deleteTask(Long id) {
-        taskRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }
